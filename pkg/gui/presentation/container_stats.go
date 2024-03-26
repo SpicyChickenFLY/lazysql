@@ -10,9 +10,9 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/jesseduffield/asciigraph"
-	"github.com/jesseduffield/lazydocker/pkg/commands"
-	"github.com/jesseduffield/lazydocker/pkg/config"
-	"github.com/jesseduffield/lazydocker/pkg/utils"
+	"github.com/SpicyChickenFLY/lazysql/pkg/commands"
+	"github.com/SpicyChickenFLY/lazysql/pkg/config"
+	"github.com/SpicyChickenFLY/lazysql/pkg/utils"
 	"github.com/mcuadros/go-lookup"
 	"github.com/samber/lo"
 )

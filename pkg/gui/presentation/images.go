@@ -1,8 +1,8 @@
 package presentation
 
 import (
-	"github.com/jesseduffield/lazydocker/pkg/commands"
-	"github.com/jesseduffield/lazydocker/pkg/utils"
+	"github.com/SpicyChickenFLY/lazysql/pkg/commands"
+	"github.com/SpicyChickenFLY/lazysql/pkg/utils"
 )
 
 func GetImageDisplayStrings(image *commands.Image) []string {

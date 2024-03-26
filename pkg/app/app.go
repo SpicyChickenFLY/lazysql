@@ -4,12 +4,12 @@ import (
 	"io"
 	"strings"
 
-	"github.com/jesseduffield/lazydocker/pkg/commands"
-	"github.com/jesseduffield/lazydocker/pkg/config"
-	"github.com/jesseduffield/lazydocker/pkg/gui"
-	"github.com/jesseduffield/lazydocker/pkg/i18n"
-	"github.com/jesseduffield/lazydocker/pkg/log"
-	"github.com/jesseduffield/lazydocker/pkg/utils"
+	"github.com/SpicyChickenFLY/lazysql/pkg/commands"
+	"github.com/SpicyChickenFLY/lazysql/pkg/config"
+	"github.com/SpicyChickenFLY/lazysql/pkg/gui"
+	"github.com/SpicyChickenFLY/lazysql/pkg/i18n"
+	"github.com/SpicyChickenFLY/lazysql/pkg/log"
+	"github.com/SpicyChickenFLY/lazysql/pkg/utils"
 	"github.com/sirupsen/logrus"
 )
 

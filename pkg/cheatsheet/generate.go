@@ -13,10 +13,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/jesseduffield/lazydocker/pkg/app"
-	"github.com/jesseduffield/lazydocker/pkg/config"
-	"github.com/jesseduffield/lazydocker/pkg/gui"
-	"github.com/jesseduffield/lazydocker/pkg/i18n"
+	"github.com/SpicyChickenFLY/lazysql/pkg/app"
+	"github.com/SpicyChickenFLY/lazysql/pkg/config"
+	"github.com/SpicyChickenFLY/lazysql/pkg/gui"
+	"github.com/SpicyChickenFLY/lazysql/pkg/i18n"
 )
 
 const (

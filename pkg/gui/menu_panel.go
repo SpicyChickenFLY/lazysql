@@ -1,10 +1,10 @@
 package gui
 
 import (
-	"github.com/jesseduffield/lazydocker/pkg/gui/panels"
-	"github.com/jesseduffield/lazydocker/pkg/gui/presentation"
-	"github.com/jesseduffield/lazydocker/pkg/gui/types"
-	"github.com/jesseduffield/lazydocker/pkg/utils"
+	"github.com/SpicyChickenFLY/lazysql/pkg/gui/panels"
+	"github.com/SpicyChickenFLY/lazysql/pkg/gui/presentation"
+	"github.com/SpicyChickenFLY/lazysql/pkg/gui/types"
+	"github.com/SpicyChickenFLY/lazysql/pkg/utils"
 )
 
 type CreateMenuOptions struct {

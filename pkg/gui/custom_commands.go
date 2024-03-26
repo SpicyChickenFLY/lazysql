@@ -2,10 +2,10 @@ package gui
 
 import (
 	"github.com/fatih/color"
-	"github.com/jesseduffield/lazydocker/pkg/commands"
-	"github.com/jesseduffield/lazydocker/pkg/config"
-	"github.com/jesseduffield/lazydocker/pkg/gui/types"
-	"github.com/jesseduffield/lazydocker/pkg/utils"
+	"github.com/SpicyChickenFLY/lazysql/pkg/commands"
+	"github.com/SpicyChickenFLY/lazysql/pkg/config"
+	"github.com/SpicyChickenFLY/lazysql/pkg/gui/types"
+	"github.com/SpicyChickenFLY/lazysql/pkg/utils"
 	"github.com/samber/lo"
 )
 
