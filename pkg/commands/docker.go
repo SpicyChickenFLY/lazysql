@@ -17,7 +17,7 @@ import (
 	ctxstore "github.com/docker/cli/cli/context/store"
 	dockerTypes "github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"github.com/imdario/mergo"
+	"dario.cat/mergo"
 	"github.com/SpicyChickenFLY/lazysql/pkg/commands/ssh"
 	"github.com/SpicyChickenFLY/lazysql/pkg/config"
 	"github.com/SpicyChickenFLY/lazysql/pkg/i18n"
