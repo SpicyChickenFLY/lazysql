@@ -18,8 +18,9 @@ type Table struct {
 // Stop stops the service's containers
 func (s *Table) Create() error {
 	// return s.runCommand(s.OSCommand.Config.UserConfig.CommandTemplates.AddTable)
-	_, err := s.SqlCommand.Execute("CREATE TABLE")
-	return err
+	// result, err := s.SqlCommand.Execute("CREATE TABLE")
+	// return err
+	return nil
 }
 
 // Up up's the service

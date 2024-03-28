@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type SqlCommand interface {
+type Driver interface {
 	Connect(urlstr string) error
 	TestConnection(urlstr string) error
 	GetDatabases() ([]string, error)
@@ -29,9 +29,38 @@ type SqlCommand interface {
 	GetProvider() string
 }
 
+type SqlCommand struct {
+	driver Driver
+}
+
 // NewOSCommand os command runner
 func NewSqlCommand(log *logrus.Entry, config *config.AppConfig) SqlCommand {
-	return &MySQLCommand{}
+	return SqlCommand {}
+}
+
+func (s *SqlCommand) RefreshDatabases() ([]*Database, error) {
+	if s.driver == nil {
+		return []*Database{}, nil
+	}
+	dbs, err := s.driver.GetDatabases()
+	if err != nil {
+		return nil, err
+	}
+
+	ownDBs := make([]*Database, len(dbs))
+
+	for i, db := range dbs {
+		tableMap, err := s.driver.GetTables(db)
+		if err != nil {
+			return nil, err
+		}
+		ownDBs[i] = &Database{
+			Name:          db,
+			TableNum: len(tableMap[db]),
+		}
+	}
+
+	return ownDBs, nil
 }
 
 type DbDmlChange struct {

@@ -10,15 +10,15 @@ import (
 
 	"github.com/go-errors/errors"
 
-	throttle "github.com/boz/go-throttle"
-	"github.com/jesseduffield/gocui"
-	lcUtils "github.com/jesseduffield/lazycore/pkg/utils"
 	"github.com/SpicyChickenFLY/lazysql/pkg/commands"
 	"github.com/SpicyChickenFLY/lazysql/pkg/config"
 	"github.com/SpicyChickenFLY/lazysql/pkg/gui/panels"
 	"github.com/SpicyChickenFLY/lazysql/pkg/gui/types"
 	"github.com/SpicyChickenFLY/lazysql/pkg/i18n"
 	"github.com/SpicyChickenFLY/lazysql/pkg/tasks"
+	throttle "github.com/boz/go-throttle"
+	"github.com/jesseduffield/gocui"
+	lcUtils "github.com/jesseduffield/lazycore/pkg/utils"
 	"github.com/sasha-s/go-deadlock"
 	"github.com/sirupsen/logrus"
 )
@@ -32,6 +32,7 @@ type Gui struct {
 	Log           *logrus.Entry
 	DockerCommand *commands.DockerCommand
 	OSCommand     *commands.OSCommand
+	SqlCommand    commands.SqlCommand
 	State         guiState
 	Config        *config.AppConfig
 	Tr            *i18n.TranslationSet
@@ -56,7 +57,9 @@ type Panels struct {
 	Containers *panels.SideListPanel[*commands.Container]
 	Images     *panels.SideListPanel[*commands.Image]
 	Volumes    *panels.SideListPanel[*commands.Volume]
-	Networks   *panels.SideListPanel[*commands.Network]
+	Datasources  *panels.SideListPanel[*commands.Datasource]
+	Databases  *panels.SideListPanel[*commands.Database]
+	// Networks   *panels.SideListPanel[*commands.Network]
 	Menu       *panels.SideListPanel[*types.MenuItem]
 }
 
@@ -261,7 +264,7 @@ func (gui *Gui) Run() error {
 	ctx, finish := context.WithCancel(context.Background())
 	defer finish()
 
-	go gui.listenForEvents(ctx, throttledRefresh.Trigger)
+	// go gui.listenForEvents(ctx, throttledRefresh.Trigger)
 	go gui.monitorContainerStats(ctx)
 
 	go func() {
@@ -288,7 +291,8 @@ func (gui *Gui) setPanels() {
 		Containers: gui.getContainersPanel(),
 		Images:     gui.getImagesPanel(),
 		Volumes:    gui.getVolumesPanel(),
-		Networks:   gui.getNetworksPanel(),
+		Databases:  gui.getDatabasePanel(),
+		// Networks:   gui.getNetworksPanel(),
 		Menu:       gui.getMenuPanel(),
 	}
 }
@@ -314,7 +318,17 @@ func (gui *Gui) refresh() {
 		}
 	}()
 	go func() {
-		if err := gui.reloadNetworks(); err != nil {
+		if err := gui.reloadDatabases(); err != nil {
+			gui.Log.Error(err)
+		}
+	}()
+	// go func() {
+	// 	if err := gui.reloadNetworks(); err != nil {
+	// 		gui.Log.Error(err)
+	// 	}
+	// }()
+	go func() {
+		if err := gui.reloadDatasources(); err != nil {
 			gui.Log.Error(err)
 		}
 	}()

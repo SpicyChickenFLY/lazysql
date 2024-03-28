@@ -10,16 +10,16 @@ import (
 	"github.com/xo/dburl"
 )
 
-type MySQLCommand struct {
+type MySQL struct {
 	Connection *sql.DB
 	Provider   string
 }
 
-func (db *MySQLCommand) TestConnection(urlstr string) (err error) {
+func (db *MySQL) TestConnection(urlstr string) (err error) {
 	return db.Connect(urlstr)
 }
 
-func (db *MySQLCommand) Connect(urlstr string) (err error) {
+func (db *MySQL) Connect(urlstr string) (err error) {
 	db.SetProvider("mysql")
 
 	db.Connection, err = dburl.Open(urlstr)
@@ -35,7 +35,7 @@ func (db *MySQLCommand) Connect(urlstr string) (err error) {
 	return nil
 }
 
-func (db *MySQLCommand) GetDatabases() ([]string, error) {
+func (db *MySQL) GetDatabases() ([]string, error) {
 	var databases []string
 
 	rows, err := db.Connection.Query("SHOW DATABASES")
@@ -57,7 +57,7 @@ func (db *MySQLCommand) GetDatabases() ([]string, error) {
 	return databases, nil
 }
 
-func (db *MySQLCommand) GetTables(database string) (map[string][]string, error) {
+func (db *MySQL) GetTables(database string) (map[string][]string, error) {
 	rows, err := db.Connection.Query("SHOW TABLES FROM " + database)
 
 	tables := make(map[string][]string)
@@ -76,7 +76,7 @@ func (db *MySQLCommand) GetTables(database string) (map[string][]string, error) 
 	return tables, nil
 }
 
-func (db *MySQLCommand) GetTableColumns(database, table string) (results [][]string, err error) {
+func (db *MySQL) GetTableColumns(database, table string) (results [][]string, err error) {
 	rows, err := db.Connection.Query("DESCRIBE " + table)
 	if err != nil {
 		return results, err
@@ -109,7 +109,7 @@ func (db *MySQLCommand) GetTableColumns(database, table string) (results [][]str
 	return
 }
 
-func (db *MySQLCommand) GetConstraints(table string) (results [][]string, err error) {
+func (db *MySQL) GetConstraints(table string) (results [][]string, err error) {
 	splitTableString := strings.Split(table, ".")
 	database := splitTableString[0]
 	tableName := splitTableString[1]
@@ -147,7 +147,7 @@ func (db *MySQLCommand) GetConstraints(table string) (results [][]string, err er
 	return
 }
 
-func (db *MySQLCommand) GetForeignKeys(table string) (results [][]string, err error) {
+func (db *MySQL) GetForeignKeys(table string) (results [][]string, err error) {
 	splitTableString := strings.Split(table, ".")
 	database := splitTableString[0]
 	tableName := splitTableString[1]
@@ -185,7 +185,7 @@ func (db *MySQLCommand) GetForeignKeys(table string) (results [][]string, err er
 	return
 }
 
-func (db *MySQLCommand) GetIndexes(table string) (results [][]string, err error) {
+func (db *MySQL) GetIndexes(table string) (results [][]string, err error) {
 	rows, err := db.Connection.Query("SHOW INDEX FROM " + table)
 	if err != nil {
 		return results, err
@@ -215,7 +215,7 @@ func (db *MySQLCommand) GetIndexes(table string) (results [][]string, err error)
 	return
 }
 
-func (db *MySQLCommand) GetRecords(table, where, sort string, offset, limit int) (paginatedResults [][]string, totalRecords int, err error) {
+func (db *MySQL) GetRecords(table, where, sort string, offset, limit int) (paginatedResults [][]string, totalRecords int, err error) {
 	defaultLimit := 300
 
 	isPaginationEnabled := offset >= 0 && limit >= 0
@@ -277,7 +277,7 @@ func (db *MySQLCommand) GetRecords(table, where, sort string, offset, limit int)
 	return
 }
 
-func (db *MySQLCommand) Query(query string) (results [][]string, err error) {
+func (db *MySQL) Query(query string) (results [][]string, err error) {
 	rows, err := db.Connection.Query(query)
 	if err != nil {
 		return results, err
@@ -310,7 +310,7 @@ func (db *MySQLCommand) Query(query string) (results [][]string, err error) {
 }
 
 // TODO: Rewrites this logic to use the primary key instead of the id
-func (db *MySQLCommand) UpdateRecord(table, column, value, primaryKeyColumnName, primaryKeyValue string) error {
+func (db *MySQL) UpdateRecord(table, column, value, primaryKeyColumnName, primaryKeyValue string) error {
 	query := fmt.Sprintf("UPDATE %s SET %s = \"%s\" WHERE %s = \"%s\"", table, column, value, primaryKeyColumnName, primaryKeyValue)
 	_, err := db.Connection.Exec(query)
 
@@ -318,14 +318,14 @@ func (db *MySQLCommand) UpdateRecord(table, column, value, primaryKeyColumnName,
 }
 
 // TODO: Rewrites this logic to use the primary key instead of the id
-func (db *MySQLCommand) DeleteRecord(table, primaryKeyColumnName, primaryKeyValue string) error {
+func (db *MySQL) DeleteRecord(table, primaryKeyColumnName, primaryKeyValue string) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE %s = \"%s\"", table, primaryKeyColumnName, primaryKeyValue)
 	_, err := db.Connection.Exec(query)
 
 	return err
 }
 
-func (db *MySQLCommand) Execute(query string) (result string, err error) {
+func (db *MySQL) Execute(query string) (result string, err error) {
 	res, error := db.Connection.Exec(query)
 
 	if error != nil {
@@ -337,7 +337,7 @@ func (db *MySQLCommand) Execute(query string) (result string, err error) {
 	}
 }
 
-func (db *MySQLCommand) ExecutePendingChanges(changes []DbDmlChange, inserts []DbInsert) (err error) {
+func (db *MySQL) ExecutePendingChanges(changes []DbDmlChange, inserts []DbInsert) (err error) {
 	queries := make([]string, 0, len(changes)+len(inserts))
 
 	// This will hold grouped changes by their RowId and Table
@@ -433,10 +433,10 @@ func (db *MySQLCommand) ExecutePendingChanges(changes []DbDmlChange, inserts []D
 	return err
 }
 
-func (db *MySQLCommand) SetProvider(provider string) {
+func (db *MySQL) SetProvider(provider string) {
 	db.Provider = provider
 }
 
-func (db *MySQLCommand) GetProvider() string {
+func (db *MySQL) GetProvider() string {
 	return db.Provider
 }

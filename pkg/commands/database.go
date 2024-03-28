@@ -5,4 +5,3 @@ type Database struct {
 	TableNum int
 }
 
-

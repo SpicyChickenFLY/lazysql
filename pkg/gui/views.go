@@ -27,12 +27,14 @@ func hideUnderScores() bool {
 
 type Views struct {
 	// side panels
-	Project    *gocui.View
-	Services   *gocui.View
-	Containers *gocui.View
-	Images     *gocui.View
-	Volumes    *gocui.View
-	Networks   *gocui.View
+	Project     *gocui.View
+	Services    *gocui.View
+	Containers  *gocui.View
+	Images      *gocui.View
+	Volumes     *gocui.View
+	Datasources *gocui.View
+	Databases   *gocui.View
+	// Networks   *gocui.View
 
 	// main panel
 	Main *gocui.View
@@ -71,7 +73,9 @@ func (gui *Gui) orderedViewNameMappings() []viewNameMapping {
 		{viewPtr: &gui.Views.Containers, name: "containers", autoPosition: true},
 		{viewPtr: &gui.Views.Images, name: "images", autoPosition: true},
 		{viewPtr: &gui.Views.Volumes, name: "volumes", autoPosition: true},
-		{viewPtr: &gui.Views.Networks, name: "networks", autoPosition: true},
+		{viewPtr: &gui.Views.Datasources, name: "datasources", autoPosition: true},
+		{viewPtr: &gui.Views.Databases, name: "databases", autoPosition: true},
+		// {viewPtr: &gui.Views.Networks, name: "networks", autoPosition: true},
 
 		{viewPtr: &gui.Views.Main, name: "main", autoPosition: true},
 
@@ -129,9 +133,17 @@ func (gui *Gui) createAllViews() error {
 	gui.Views.Volumes.Title = gui.Tr.VolumesTitle
 	gui.Views.Volumes.SelBgColor = selectedLineBgColor
 
-	gui.Views.Networks.Highlight = true
-	gui.Views.Networks.Title = gui.Tr.NetworksTitle
-	gui.Views.Networks.SelBgColor = selectedLineBgColor
+	gui.Views.Datasources.Highlight = true
+	gui.Views.Datasources.Title = "Datasource"
+	gui.Views.Datasources.SelBgColor = selectedLineBgColor
+
+	gui.Views.Databases.Highlight = true
+	gui.Views.Databases.Title = "Database"
+	gui.Views.Databases.SelBgColor = selectedLineBgColor
+
+	// gui.Views.Networks.Highlight = true
+	// gui.Views.Networks.Title = gui.Tr.NetworksTitle
+	// gui.Views.Networks.SelBgColor = selectedLineBgColor
 
 	gui.Views.Options.Frame = false
 	gui.Views.Options.FgColor = gui.GetOptionsPanelTextColor()
