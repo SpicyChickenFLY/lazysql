@@ -277,7 +277,7 @@ func (db *MySQLCommand) GetRecords(table, where, sort string, offset, limit int)
 	return
 }
 
-func (db *MySQLCommand) ExecuteQuery(query string) (results [][]string, err error) {
+func (db *MySQLCommand) Query(query string) (results [][]string, err error) {
 	rows, err := db.Connection.Query(query)
 	if err != nil {
 		return results, err
@@ -325,7 +325,7 @@ func (db *MySQLCommand) DeleteRecord(table, primaryKeyColumnName, primaryKeyValu
 	return err
 }
 
-func (db *MySQLCommand) ExecuteDMLStatement(query string) (result string, err error) {
+func (db *MySQLCommand) Execute(query string) (result string, err error) {
 	res, error := db.Connection.Exec(query)
 
 	if error != nil {

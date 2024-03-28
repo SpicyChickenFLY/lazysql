@@ -21,7 +21,6 @@ require (
 	github.com/jesseduffield/kill v0.0.0-20220618033138-bfbe04675d10
 	github.com/jesseduffield/lazycore v0.0.0-20221023210126-718a4caea996
 	github.com/jesseduffield/yaml v2.1.0+incompatible
-	github.com/jorgerojas26/lazysql v0.1.8
 	github.com/mattn/go-runewidth v0.0.15
 	github.com/mcuadros/go-lookup v0.0.0-20230627150232-5415b5b32da8
 	github.com/mgutz/str v1.2.0
@@ -46,12 +45,9 @@ require (
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fvbommel/sortorder v1.1.0 // indirect
-	github.com/gdamore/encoding v1.0.0 // indirect
-	github.com/gdamore/tcell/v2 v2.7.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/moby/docker-image-spec v1.3.1 // indirect
@@ -64,7 +60,6 @@ require (
 	github.com/opencontainers/image-spec v1.1.0 // indirect
 	github.com/petermattis/goid v0.0.0-20180202154549-b0b1615b78e5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/rivo/tview v0.0.0-20240101144852-b3bd1aa5e9f2 // indirect
 	github.com/rivo/uniseg v0.4.3 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0 // indirect
@@ -75,8 +70,6 @@ require (
 	go.opentelemetry.io/otel/trace v1.24.0 // indirect
 	golang.org/x/exp v0.0.0-20220317015231-48e79f11773a // indirect
 	golang.org/x/sys v0.17.0 // indirect
-	golang.org/x/term v0.15.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
