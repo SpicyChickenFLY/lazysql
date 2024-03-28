@@ -3,6 +3,7 @@ package gui
 import (
 	"github.com/SpicyChickenFLY/lazysql/pkg/commands"
 	"github.com/SpicyChickenFLY/lazysql/pkg/gui/panels"
+	"github.com/SpicyChickenFLY/lazysql/pkg/gui/presentation"
 	"github.com/SpicyChickenFLY/lazysql/pkg/tasks"
 )
 
@@ -36,7 +37,7 @@ func (gui *Gui) getDatabasePanel() *panels.SideListPanel[*commands.Database] {
 		Sort: func(a *commands.Database, b *commands.Database) bool {
 			return false // dont sort for now
 		},
-        // TODO: GetTableCells: presentation.GetDatabaseDisplayStrings,
+        GetTableCells: presentation.GetDatabaseDisplayStrings,
 		// It doesn't make sense to filter a list of only one item.
 		DisableFilter: true,
 	}
