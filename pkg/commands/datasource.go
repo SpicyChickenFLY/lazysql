@@ -1,6 +1,6 @@
 package commands
 
-type DataSource struct {
+type Datasource struct {
 	Name string
 }
 

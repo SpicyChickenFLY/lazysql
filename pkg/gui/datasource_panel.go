@@ -50,12 +50,12 @@ func (gui *Gui) reloadDatasources() error {
 }
 
 func (gui *Gui) refreshStateDatasource() error {
-	databases, err := gui.SqlCommand.RefreshDatasources()
+	datasources, err := gui.SqlCommand.RefreshDatasources()
 	if err != nil {
 		return err
 	}
 
-	gui.Panels.Datasources.SetItems(databases)
+	gui.Panels.Datasources.SetItems(datasources)
 
 	return nil
 }

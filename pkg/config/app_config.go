@@ -57,6 +57,8 @@ type UserConfig struct {
 	// what stat info to graph
 	Stats StatsConfig `yaml:"stats,omitempty"`
 
+	Datasource []DatasourceConfig `yaml: "datasources, omitempty"`
+
 	// Replacements determines how we render an item's info
 	Replacements Replacements `yaml:"replacements,omitempty"`
 
@@ -280,6 +282,15 @@ type StatsConfig struct {
 	MaxDuration time.Duration `yaml:"maxDuration,omitempty"`
 }
 
+// DatasourceConfig contains the database url info
+type DatasourceConfig struct {
+	// Name(Alias) of the datasource(not required)
+	Name string `yaml:"name,omitempty"`
+
+	// DSN is the Data source name of the target database
+	DSN string `yaml:"dsn,omitempty"`
+}
+
 // CustomCommands contains the custom commands that you might want to use on any
 // given service or container
 type CustomCommands struct {
@@ -466,6 +477,10 @@ func GetDefaultConfig() UserConfig {
 					Color:    "green",
 				},
 			},
+		},
+		Datasource: []DatasourceConfig{
+			{Name: "local", DSN: "mysql://"},
+			{Name: "", DSN: "mysql://"},
 		},
 		Replacements: Replacements{
 			ImageNamePrefixes: map[string]string{},

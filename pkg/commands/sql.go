@@ -1,9 +1,13 @@
 package commands
 
 import (
+	"io"
+
 	"github.com/google/uuid"
+	"github.com/sasha-s/go-deadlock"
 
 	"github.com/SpicyChickenFLY/lazysql/pkg/config"
+	"github.com/SpicyChickenFLY/lazysql/pkg/i18n"
 	"github.com/sirupsen/logrus"
 )
 
@@ -30,19 +34,64 @@ type Driver interface {
 }
 
 type SqlCommand struct {
-	driver Driver
+	Log                    *logrus.Entry
+	Tr                     *i18n.TranslationSet
+	Config                 *config.AppConfig
+	Client Driver
+	ErrorChan chan error
+	DatasourceMutex deadlock.Mutex
+	DatabaseMutex deadlock.Mutex
+	TableMutex deadlock.Mutex
+
+	Closers []io.Closer
 }
 
 // NewOSCommand os command runner
-func NewSqlCommand(log *logrus.Entry, config *config.AppConfig) SqlCommand {
-	return SqlCommand {}
+func NewSqlCommand(log *logrus.Entry, tr *i18n.TranslationSet, config *config.AppConfig, errorChan chan error) (*SqlCommand, error) {
+	return &SqlCommand {
+		Log:                    log,
+		Tr:                     tr,
+		Config:                 config,
+		Client:                 nil,
+		ErrorChan:              errorChan,
+		// Closers:                []io.Closer{tunnelCloser},
+	}, nil
+}
+
+func (s *SqlCommand) RefreshDatasources() ([]*Datasource, error) {
+	// return []*Datasource{ {Name: "good"} }, nil
+	s.Client = &MySQL{}
+	if s.Client == nil {
+		return []*Datasource{}, nil
+	}
+
+	dbs := s.Config.UserConfig.Datasource
+	if dbs == nil {
+		dbs = []config.DatasourceConfig{
+			{ Name: "hi", DSN: "mysql://" },
+		}
+	}
+
+	ownDBs := make([]*Datasource, len(dbs))
+
+	for i, db := range dbs {
+		err := s.Client.TestConnection(db.DSN)
+		if err != nil {
+			return nil, err
+		}
+		ownDBs[i] = &Datasource{
+			Name:          db.DSN,
+		}
+	}
+
+	return ownDBs, nil
 }
 
 func (s *SqlCommand) RefreshDatabases() ([]*Database, error) {
-	if s.driver == nil {
+	if s.Client == nil {
 		return []*Database{}, nil
 	}
-	dbs, err := s.driver.GetDatabases()
+	dbs, err := s.Client.GetDatabases()
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +99,7 @@ func (s *SqlCommand) RefreshDatabases() ([]*Database, error) {
 	ownDBs := make([]*Database, len(dbs))
 
 	for i, db := range dbs {
-		tableMap, err := s.driver.GetTables(db)
+		tableMap, err := s.Client.GetTables(db)
 		if err != nil {
 			return nil, err
 		}

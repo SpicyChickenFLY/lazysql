@@ -21,6 +21,7 @@ type App struct {
 	Log           *logrus.Entry
 	OSCommand     *commands.OSCommand
 	DockerCommand *commands.DockerCommand
+	SqlCommand    *commands.SqlCommand
 	Gui           *gui.Gui
 	Tr            *i18n.TranslationSet
 	ErrorChan     chan error
@@ -47,8 +48,12 @@ func NewApp(config *config.AppConfig) (*App, error) {
 	if err != nil {
 		return app, err
 	}
+	app.SqlCommand, err = commands.NewSqlCommand(app.Log, app.Tr, app.Config, app.ErrorChan)
+	if err != nil {
+		return app, err
+	}
 	app.closers = append(app.closers, app.DockerCommand)
-	app.Gui, err = gui.NewGui(app.Log, app.DockerCommand, app.OSCommand, app.Tr, config, app.ErrorChan)
+	app.Gui, err = gui.NewGui(app.Log, app.DockerCommand, app.OSCommand, app.SqlCommand, app.Tr, config, app.ErrorChan)
 	if err != nil {
 		return app, err
 	}

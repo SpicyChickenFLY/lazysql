@@ -32,7 +32,7 @@ type Gui struct {
 	Log           *logrus.Entry
 	DockerCommand *commands.DockerCommand
 	OSCommand     *commands.OSCommand
-	SqlCommand    commands.SqlCommand
+	SqlCommand    *commands.SqlCommand
 	State         guiState
 	Config        *config.AppConfig
 	Tr            *i18n.TranslationSet
@@ -52,15 +52,15 @@ type Gui struct {
 }
 
 type Panels struct {
-	Projects   *panels.SideListPanel[*commands.Project]
-	Services   *panels.SideListPanel[*commands.Service]
-	Containers *panels.SideListPanel[*commands.Container]
-	Images     *panels.SideListPanel[*commands.Image]
-	Volumes    *panels.SideListPanel[*commands.Volume]
-	Datasources  *panels.SideListPanel[*commands.Datasource]
-	Databases  *panels.SideListPanel[*commands.Database]
+	Projects    *panels.SideListPanel[*commands.Project]
+	Services    *panels.SideListPanel[*commands.Service]
+	Containers  *panels.SideListPanel[*commands.Container]
+	Images      *panels.SideListPanel[*commands.Image]
+	Volumes     *panels.SideListPanel[*commands.Volume]
+	Datasources *panels.SideListPanel[*commands.Datasource]
+	Databases   *panels.SideListPanel[*commands.Database]
 	// Networks   *panels.SideListPanel[*commands.Network]
-	Menu       *panels.SideListPanel[*types.MenuItem]
+	Menu *panels.SideListPanel[*types.MenuItem]
 }
 
 type Mutexes struct {
@@ -131,7 +131,7 @@ func getScreenMode(config *config.AppConfig) WindowMaximisation {
 }
 
 // NewGui builds a new gui handler
-func NewGui(log *logrus.Entry, dockerCommand *commands.DockerCommand, oSCommand *commands.OSCommand, tr *i18n.TranslationSet, config *config.AppConfig, errorChan chan error) (*Gui, error) {
+func NewGui(log *logrus.Entry, dockerCommand *commands.DockerCommand, oSCommand *commands.OSCommand, sqlCommand *commands.SqlCommand, tr *i18n.TranslationSet, config *config.AppConfig, errorChan chan error) (*Gui, error) {
 	initialState := guiState{
 		Platform: *oSCommand.Platform,
 		Panels: &panelStates{
@@ -149,6 +149,7 @@ func NewGui(log *logrus.Entry, dockerCommand *commands.DockerCommand, oSCommand 
 		Log:           log,
 		DockerCommand: dockerCommand,
 		OSCommand:     oSCommand,
+		SqlCommand:    sqlCommand,
 		State:         initialState,
 		Config:        config,
 		Tr:            tr,
@@ -286,14 +287,15 @@ func (gui *Gui) Run() error {
 
 func (gui *Gui) setPanels() {
 	gui.Panels = Panels{
-		Projects:   gui.getProjectPanel(),
-		Services:   gui.getServicesPanel(),
-		Containers: gui.getContainersPanel(),
-		Images:     gui.getImagesPanel(),
-		Volumes:    gui.getVolumesPanel(),
-		Databases:  gui.getDatabasePanel(),
+		Projects:    gui.getProjectPanel(),
+		Services:    gui.getServicesPanel(),
+		Containers:  gui.getContainersPanel(),
+		Images:      gui.getImagesPanel(),
+		Volumes:     gui.getVolumesPanel(),
+		Datasources: gui.getDatasourcePanel(),
+		Databases:   gui.getDatabasePanel(),
 		// Networks:   gui.getNetworksPanel(),
-		Menu:       gui.getMenuPanel(),
+		Menu: gui.getMenuPanel(),
 	}
 }
 
