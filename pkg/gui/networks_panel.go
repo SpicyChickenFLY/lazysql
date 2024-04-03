@@ -1,80 +1,80 @@
 package gui
 
-import (
-	"strconv"
-
-	"github.com/SpicyChickenFLY/lazysql/pkg/commands"
-	"github.com/SpicyChickenFLY/lazysql/pkg/gui/panels"
-	"github.com/SpicyChickenFLY/lazysql/pkg/gui/presentation"
-	"github.com/SpicyChickenFLY/lazysql/pkg/tasks"
-	"github.com/SpicyChickenFLY/lazysql/pkg/utils"
-)
-
-func (gui *Gui) getNetworksPanel() *panels.SideListPanel[*commands.Network] {
-	return &panels.SideListPanel[*commands.Network]{
-		ContextState: &panels.ContextState[*commands.Network]{
-			GetMainTabs: func() []panels.MainTab[*commands.Network] {
-				return []panels.MainTab[*commands.Network]{
-					{
-						Key:    "config",
-						Title:  gui.Tr.ConfigTitle,
-						Render: gui.renderNetworkConfig,
-					},
-				}
-			},
-			GetItemContextCacheKey: func(network *commands.Network) string {
-				return "networks-" + network.Name
-			},
-		},
-		// ListPanel: panels.ListPanel[*commands.Network]{
-		// 	List: panels.NewFilteredList[*commands.Network](),
-		// 	View: gui.Views.Networks,
-		// },
-		NoItemsMessage: gui.Tr.NoNetworks,
-		Gui:            gui.intoInterface(),
-		// we're sorting these networks based on whether they have labels defined,
-		// because those are the ones you typically care about.
-		// Within that, we also sort them alphabetically
-		Sort: func(a *commands.Network, b *commands.Network) bool {
-			return a.Name < b.Name
-		},
-		GetTableCells: presentation.GetNetworkDisplayStrings,
-	}
-}
-
-func (gui *Gui) renderNetworkConfig(network *commands.Network) tasks.TaskFunc {
-	return gui.NewSimpleRenderStringTask(func() string { return gui.networkConfigStr(network) })
-}
-
-func (gui *Gui) networkConfigStr(network *commands.Network) string {
-	padding := 15
-	output := ""
-	output += utils.WithPadding("ID: ", padding) + network.Network.ID + "\n"
-	output += utils.WithPadding("Name: ", padding) + network.Name + "\n"
-	output += utils.WithPadding("Driver: ", padding) + network.Network.Driver + "\n"
-	output += utils.WithPadding("Scope: ", padding) + network.Network.Scope + "\n"
-	output += utils.WithPadding("EnabledIPV6: ", padding) + strconv.FormatBool(network.Network.EnableIPv6) + "\n"
-	output += utils.WithPadding("Internal: ", padding) + strconv.FormatBool(network.Network.Internal) + "\n"
-	output += utils.WithPadding("Attachable: ", padding) + strconv.FormatBool(network.Network.Attachable) + "\n"
-	output += utils.WithPadding("Ingress: ", padding) + strconv.FormatBool(network.Network.Ingress) + "\n"
-
-	output += utils.WithPadding("Containers: ", padding)
-	if len(network.Network.Containers) > 0 {
-		output += "\n"
-		for _, v := range network.Network.Containers {
-			output += utils.FormatMapItem(padding, v.Name, v.EndpointID)
-		}
-	} else {
-		output += "none\n"
-	}
-
-	output += "\n"
-	output += utils.WithPadding("Labels: ", padding) + utils.FormatMap(padding, network.Network.Labels) + "\n"
-	output += utils.WithPadding("Options: ", padding) + utils.FormatMap(padding, network.Network.Options)
-
-	return output
-}
-
+// import (
+// 	"strconv"
+//
+// 	"github.com/SpicyChickenFLY/lazysql/pkg/commands"
+// 	"github.com/SpicyChickenFLY/lazysql/pkg/gui/panels"
+// 	"github.com/SpicyChickenFLY/lazysql/pkg/gui/presentation"
+// 	"github.com/SpicyChickenFLY/lazysql/pkg/tasks"
+// 	"github.com/SpicyChickenFLY/lazysql/pkg/utils"
+// )
+//
+// func (gui *Gui) getNetworksPanel() *panels.SideListPanel[*commands.Network] {
+// 	return &panels.SideListPanel[*commands.Network]{
+// 		ContextState: &panels.ContextState[*commands.Network]{
+// 			GetMainTabs: func() []panels.MainTab[*commands.Network] {
+// 				return []panels.MainTab[*commands.Network]{
+// 					{
+// 						Key:    "config",
+// 						Title:  gui.Tr.ConfigTitle,
+// 						Render: gui.renderNetworkConfig,
+// 					},
+// 				}
+// 			},
+// 			GetItemContextCacheKey: func(network *commands.Network) string {
+// 				return "networks-" + network.Name
+// 			},
+// 		},
+// 		// ListPanel: panels.ListPanel[*commands.Network]{
+// 		// 	List: panels.NewFilteredList[*commands.Network](),
+// 		// 	View: gui.Views.Networks,
+// 		// },
+// 		NoItemsMessage: gui.Tr.NoNetworks,
+// 		Gui:            gui.intoInterface(),
+// 		// we're sorting these networks based on whether they have labels defined,
+// 		// because those are the ones you typically care about.
+// 		// Within that, we also sort them alphabetically
+// 		Sort: func(a *commands.Network, b *commands.Network) bool {
+// 			return a.Name < b.Name
+// 		},
+// 		GetTableCells: presentation.GetNetworkDisplayStrings,
+// 	}
+// }
+//
+// func (gui *Gui) renderNetworkConfig(network *commands.Network) tasks.TaskFunc {
+// 	return gui.NewSimpleRenderStringTask(func() string { return gui.networkConfigStr(network) })
+// }
+//
+// func (gui *Gui) networkConfigStr(network *commands.Network) string {
+// 	padding := 15
+// 	output := ""
+// 	output += utils.WithPadding("ID: ", padding) + network.Network.ID + "\n"
+// 	output += utils.WithPadding("Name: ", padding) + network.Name + "\n"
+// 	output += utils.WithPadding("Driver: ", padding) + network.Network.Driver + "\n"
+// 	output += utils.WithPadding("Scope: ", padding) + network.Network.Scope + "\n"
+// 	output += utils.WithPadding("EnabledIPV6: ", padding) + strconv.FormatBool(network.Network.EnableIPv6) + "\n"
+// 	output += utils.WithPadding("Internal: ", padding) + strconv.FormatBool(network.Network.Internal) + "\n"
+// 	output += utils.WithPadding("Attachable: ", padding) + strconv.FormatBool(network.Network.Attachable) + "\n"
+// 	output += utils.WithPadding("Ingress: ", padding) + strconv.FormatBool(network.Network.Ingress) + "\n"
+//
+// 	output += utils.WithPadding("Containers: ", padding)
+// 	if len(network.Network.Containers) > 0 {
+// 		output += "\n"
+// 		for _, v := range network.Network.Containers {
+// 			output += utils.FormatMapItem(padding, v.Name, v.EndpointID)
+// 		}
+// 	} else {
+// 		output += "none\n"
+// 	}
+//
+// 	output += "\n"
+// 	output += utils.WithPadding("Labels: ", padding) + utils.FormatMap(padding, network.Network.Labels) + "\n"
+// 	output += utils.WithPadding("Options: ", padding) + utils.FormatMap(padding, network.Network.Options)
+//
+// 	return output
+// }
+//
 // func (gui *Gui) reloadNetworks() error {
 // 	if err := gui.refreshStateNetworks(); err != nil {
 // 		return err

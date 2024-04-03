@@ -3,7 +3,6 @@ package gui
 import (
 	"context"
 	"os"
-	"strings"
 	"time"
 
 	dockerTypes "github.com/docker/docker/api/types"
@@ -53,8 +52,8 @@ type Gui struct {
 
 type Panels struct {
 	Projects    *panels.SideListPanel[*commands.Project]
-	Services    *panels.SideListPanel[*commands.Service]
-	Containers  *panels.SideListPanel[*commands.Container]
+	// Services    *panels.SideListPanel[*commands.Service]
+	// Containers  *panels.SideListPanel[*commands.Container]
 	Images      *panels.SideListPanel[*commands.Image]
 	Volumes     *panels.SideListPanel[*commands.Volume]
 	Datasources *panels.SideListPanel[*commands.Datasource]
@@ -220,19 +219,19 @@ func (gui *Gui) Run() error {
 	throttledRefresh := throttle.ThrottleFunc(time.Millisecond*50, true, gui.refresh)
 	defer throttledRefresh.Stop()
 
-	go func() {
-		for err := range gui.ErrorChan {
-			if err == nil {
-				continue
-			}
-			if strings.Contains(err.Error(), "No such container") {
-				// this happens all the time when e.g. restarting containers so we won't worry about it
-				gui.Log.Warn(err)
-				continue
-			}
-			_ = gui.createErrorPanel(err.Error())
-		}
-	}()
+	// go func() {
+	// 	for err := range gui.ErrorChan {
+	// 		if err == nil {
+	// 			continue
+	// 		}
+	// 		if strings.Contains(err.Error(), "No such container") {
+	// 			// this happens all the time when e.g. restarting containers so we won't worry about it
+	// 			gui.Log.Warn(err)
+	// 			continue
+	// 		}
+	// 		_ = gui.createErrorPanel(err.Error())
+	// 	}
+	// }()
 
 	g.SetManager(gocui.ManagerFunc(gui.layout), gocui.ManagerFunc(gui.getFocusLayout()))
 
@@ -262,20 +261,20 @@ func (gui *Gui) Run() error {
 		}
 	}
 
-	ctx, finish := context.WithCancel(context.Background())
-	defer finish()
+	// ctx, finish := context.WithCancel(context.Background())
+	// defer finish()
 
 	// go gui.listenForEvents(ctx, throttledRefresh.Trigger)
-	go gui.monitorContainerStats(ctx)
+	// go gui.monitorContainerStats(ctx)
 
 	go func() {
 		throttledRefresh.Trigger()
 
 		gui.goEvery(time.Millisecond*30, gui.reRenderMain)
-		gui.goEvery(time.Millisecond*1000, gui.updateContainerDetails)
+		// gui.goEvery(time.Millisecond*1000, gui.updateContainerDetails)
 		gui.goEvery(time.Millisecond*1000, gui.checkForContextChange)
 		// we need to regularly re-render these because their stats will be changed in the background
-		gui.goEvery(time.Millisecond*1000, gui.renderContainersAndServices)
+		// gui.goEvery(time.Millisecond*1000, gui.renderContainersAndServices)
 	}()
 
 	err = g.MainLoop()
@@ -288,8 +287,8 @@ func (gui *Gui) Run() error {
 func (gui *Gui) setPanels() {
 	gui.Panels = Panels{
 		Projects:    gui.getProjectPanel(),
-		Services:    gui.getServicesPanel(),
-		Containers:  gui.getContainersPanel(),
+		// Services:    gui.getServicesPanel(),
+		// Containers:  gui.getContainersPanel(),
 		Images:      gui.getImagesPanel(),
 		Volumes:     gui.getVolumesPanel(),
 		Datasources: gui.getDatasourcePanel(),
@@ -299,9 +298,9 @@ func (gui *Gui) setPanels() {
 	}
 }
 
-func (gui *Gui) updateContainerDetails() error {
-	return gui.DockerCommand.UpdateContainerDetails(gui.Panels.Containers.List.GetAllItems())
-}
+// func (gui *Gui) updateContainerDetails() error {
+// 	return gui.DockerCommand.UpdateContainerDetails(gui.Panels.Containers.List.GetAllItems())
+// }
 
 func (gui *Gui) refresh() {
 	go func() {
@@ -309,11 +308,11 @@ func (gui *Gui) refresh() {
 			gui.Log.Error(err)
 		}
 	}()
-	go func() {
-		if err := gui.refreshContainersAndServices(); err != nil {
-			gui.Log.Error(err)
-		}
-	}()
+	// go func() {
+	// 	if err := gui.refreshContainersAndServices(); err != nil {
+	// 		gui.Log.Error(err)
+	// 	}
+	// }()
 	go func() {
 		if err := gui.reloadVolumes(); err != nil {
 			gui.Log.Error(err)
@@ -477,10 +476,11 @@ func (gui *Gui) ShouldRefresh(key string) bool {
 }
 
 func (gui *Gui) initiallyFocusedViewName() string {
-	if gui.DockerCommand.InDockerComposeProject {
-		return "services"
-	}
-	return "containers"
+	// if gui.DockerCommand.InDockerComposeProject {
+	// 	return "services"
+	// }
+	// return "containers"
+	return "project"
 }
 
 func (gui *Gui) IgnoreStrings() []string {
@@ -491,24 +491,24 @@ func (gui *Gui) Update(f func() error) {
 	gui.g.Update(func(*gocui.Gui) error { return f() })
 }
 
-func (gui *Gui) monitorContainerStats(ctx context.Context) {
-	// periodically loop through running containers and see if we need to create a monitor goroutine for any
-	// every second we check if we need to spawn a new goroutine
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		case <-ticker.C:
-			for _, container := range gui.Panels.Containers.List.GetAllItems() {
-				if !container.MonitoringStats {
-					go gui.DockerCommand.CreateClientStatMonitor(container)
-				}
-			}
-		}
-	}
-}
+// func (gui *Gui) monitorContainerStats(ctx context.Context) {
+// 	// periodically loop through running containers and see if we need to create a monitor goroutine for any
+// 	// every second we check if we need to spawn a new goroutine
+// 	ticker := time.NewTicker(time.Second)
+// 	defer ticker.Stop()
+// 	for {
+// 		select {
+// 		case <-ctx.Done():
+// 			return
+// 		case <-ticker.C:
+// 			for _, container := range gui.Panels.Containers.List.GetAllItems() {
+// 				if !container.MonitoringStats {
+// 					go gui.DockerCommand.CreateClientStatMonitor(container)
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
 // this is used by our cheatsheet code to generate keybindings. We need some views
 // and panels to exist for us to know what keybindings there are, so we invoke

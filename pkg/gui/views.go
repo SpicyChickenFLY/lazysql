@@ -28,8 +28,8 @@ func hideUnderScores() bool {
 type Views struct {
 	// side panels
 	Project     *gocui.View
-	Services    *gocui.View
-	Containers  *gocui.View
+	// Services    *gocui.View
+	// Containers  *gocui.View
 	Images      *gocui.View
 	Volumes     *gocui.View
 	Datasources *gocui.View
@@ -69,8 +69,8 @@ func (gui *Gui) orderedViewNameMappings() []viewNameMapping {
 		// first layer. Ordering within this layer does not matter because there are
 		// no overlapping views
 		{viewPtr: &gui.Views.Project, name: "project", autoPosition: true},
-		{viewPtr: &gui.Views.Services, name: "services", autoPosition: true},
-		{viewPtr: &gui.Views.Containers, name: "containers", autoPosition: true},
+		// {viewPtr: &gui.Views.Services, name: "services", autoPosition: true},
+		// {viewPtr: &gui.Views.Containers, name: "containers", autoPosition: true},
 		{viewPtr: &gui.Views.Images, name: "images", autoPosition: true},
 		{viewPtr: &gui.Views.Volumes, name: "volumes", autoPosition: true},
 		{viewPtr: &gui.Views.Datasources, name: "datasources", autoPosition: true},
@@ -113,17 +113,17 @@ func (gui *Gui) createAllViews() error {
 
 	gui.Views.Project.Title = gui.Tr.ProjectTitle
 
-	gui.Views.Services.Highlight = true
-	gui.Views.Services.Title = gui.Tr.ServicesTitle
-	gui.Views.Services.SelBgColor = selectedLineBgColor
-
-	gui.Views.Containers.Highlight = true
-	gui.Views.Containers.SelBgColor = selectedLineBgColor
-	if gui.Config.UserConfig.Gui.ShowAllContainers || !gui.DockerCommand.InDockerComposeProject {
-		gui.Views.Containers.Title = gui.Tr.ContainersTitle
-	} else {
-		gui.Views.Containers.Title = gui.Tr.StandaloneContainersTitle
-	}
+	// gui.Views.Services.Highlight = true
+	// gui.Views.Services.Title = gui.Tr.ServicesTitle
+	// gui.Views.Services.SelBgColor = selectedLineBgColor
+	//
+	// gui.Views.Containers.Highlight = true
+	// gui.Views.Containers.SelBgColor = selectedLineBgColor
+	// if gui.Config.UserConfig.Gui.ShowAllContainers || !gui.DockerCommand.InDockerComposeProject {
+	// 	gui.Views.Containers.Title = gui.Tr.ContainersTitle
+	// } else {
+	// 	gui.Views.Containers.Title = gui.Tr.StandaloneContainersTitle
+	// }
 
 	gui.Views.Images.Highlight = true
 	gui.Views.Images.Title = gui.Tr.ImagesTitle
