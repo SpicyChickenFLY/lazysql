@@ -34,32 +34,31 @@ type Driver interface {
 }
 
 type SqlCommand struct {
-	Log                    *logrus.Entry
-	Tr                     *i18n.TranslationSet
-	Config                 *config.AppConfig
-	Client Driver
-	ErrorChan chan error
+	Log             *logrus.Entry
+	Tr              *i18n.TranslationSet
+	Config          *config.AppConfig
+	Client          Driver
+	ErrorChan       chan error
 	DatasourceMutex deadlock.Mutex
-	DatabaseMutex deadlock.Mutex
-	TableMutex deadlock.Mutex
+	DatabaseMutex   deadlock.Mutex
+	TableMutex      deadlock.Mutex
 
 	Closers []io.Closer
 }
 
 // NewOSCommand os command runner
 func NewSqlCommand(log *logrus.Entry, tr *i18n.TranslationSet, config *config.AppConfig, errorChan chan error) (*SqlCommand, error) {
-	return &SqlCommand {
-		Log:                    log,
-		Tr:                     tr,
-		Config:                 config,
-		Client:                 nil,
-		ErrorChan:              errorChan,
+	return &SqlCommand{
+		Log:       log,
+		Tr:        tr,
+		Config:    config,
+		Client:    nil,
+		ErrorChan: errorChan,
 		// Closers:                []io.Closer{tunnelCloser},
 	}, nil
 }
 
 func (s *SqlCommand) RefreshDatasources() ([]*Datasource, error) {
-	// return []*Datasource{ {Name: "good"} }, nil
 	s.Client = &MySQL{}
 	if s.Client == nil {
 		return []*Datasource{}, nil
@@ -67,9 +66,7 @@ func (s *SqlCommand) RefreshDatasources() ([]*Datasource, error) {
 
 	dbs := s.Config.UserConfig.Datasource
 	if dbs == nil {
-		dbs = []config.DatasourceConfig{
-			{ Name: "hi", DSN: "mysql://" },
-		}
+		dbs = []config.DatasourceConfig{}
 	}
 
 	ownDBs := make([]*Datasource, len(dbs))
@@ -79,8 +76,12 @@ func (s *SqlCommand) RefreshDatasources() ([]*Datasource, error) {
 		if err != nil {
 			return nil, err
 		}
+		name := db.DSN
+		if db.Name != "" {
+			name = db.Name
+		}
 		ownDBs[i] = &Datasource{
-			Name:          db.DSN,
+			Name: name,
 		}
 	}
 
@@ -104,7 +105,7 @@ func (s *SqlCommand) RefreshDatabases() ([]*Database, error) {
 			return nil, err
 		}
 		ownDBs[i] = &Database{
-			Name:          db,
+			Name:     db,
 			TableNum: len(tableMap[db]),
 		}
 	}

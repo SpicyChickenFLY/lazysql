@@ -7,9 +7,6 @@ import (
 	"github.com/SpicyChickenFLY/lazysql/pkg/tasks"
 )
 
-// Although at the moment we'll only have one project, in future we could have
-// a list of projects in the project panel.
-
 func (gui *Gui) getDatabasePanel() *panels.SideListPanel[*commands.Database] {
 	return &panels.SideListPanel[*commands.Database]{
 		ContextState: &panels.ContextState[*commands.Database]{

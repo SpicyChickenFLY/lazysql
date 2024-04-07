@@ -479,8 +479,7 @@ func GetDefaultConfig() UserConfig {
 			},
 		},
 		Datasource: []DatasourceConfig{
-			{Name: "local", DSN: "mysql://"},
-			{Name: "", DSN: "mysql://"},
+			{Name: "mysql-local", DSN: "mysql://root:123456@localhost:3306/test"},
 		},
 		Replacements: Replacements{
 			ImageNamePrefixes: map[string]string{},

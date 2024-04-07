@@ -19,6 +19,7 @@ func (gui *Gui) getDatasourcePanel() *panels.SideListPanel[*commands.Datasource]
 							return gui.NewSimpleRenderStringTask(func() string { return "Hello lazysql" })
 						},
 					},
+					// TODO: Databases/Users/Administer/SystemInfo
 				}
 			},
 			GetItemContextCacheKey: func(connection *commands.Datasource) string {
@@ -61,5 +62,5 @@ func (gui *Gui) refreshStateDatasource() error {
 }
 
 func (gui *Gui) renderDatasourceInfo(_database *commands.Datasource) tasks.TaskFunc {
-	return gui.NewSimpleRenderStringTask(func() string { return "Hello lazysql" })
+	return gui.NewSimpleRenderStringTask(func() string { return "render datasource info" })
 }

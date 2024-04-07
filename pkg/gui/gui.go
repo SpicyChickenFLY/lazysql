@@ -219,19 +219,14 @@ func (gui *Gui) Run() error {
 	throttledRefresh := throttle.ThrottleFunc(time.Millisecond*50, true, gui.refresh)
 	defer throttledRefresh.Stop()
 
-	// go func() {
-	// 	for err := range gui.ErrorChan {
-	// 		if err == nil {
-	// 			continue
-	// 		}
-	// 		if strings.Contains(err.Error(), "No such container") {
-	// 			// this happens all the time when e.g. restarting containers so we won't worry about it
-	// 			gui.Log.Warn(err)
-	// 			continue
-	// 		}
-	// 		_ = gui.createErrorPanel(err.Error())
-	// 	}
-	// }()
+	go func() {
+		for err := range gui.ErrorChan {
+			if err == nil {
+				continue
+			}
+			_ = gui.createErrorPanel(err.Error())
+		}
+	}()
 
 	g.SetManager(gocui.ManagerFunc(gui.layout), gocui.ManagerFunc(gui.getFocusLayout()))
 
@@ -289,8 +284,8 @@ func (gui *Gui) setPanels() {
 		Projects:    gui.getProjectPanel(),
 		// Services:    gui.getServicesPanel(),
 		// Containers:  gui.getContainersPanel(),
-		Images:      gui.getImagesPanel(),
-		Volumes:     gui.getVolumesPanel(),
+		// Images:      gui.getImagesPanel(),
+		// Volumes:     gui.getVolumesPanel(),
 		Datasources: gui.getDatasourcePanel(),
 		Databases:   gui.getDatabasePanel(),
 		// Networks:   gui.getNetworksPanel(),
@@ -313,8 +308,13 @@ func (gui *Gui) refresh() {
 	// 		gui.Log.Error(err)
 	// 	}
 	// }()
+	// go func() {
+	// 	if err := gui.reloadVolumes(); err != nil {
+	// 		gui.Log.Error(err)
+	// 	}
+	// }()
 	go func() {
-		if err := gui.reloadVolumes(); err != nil {
+		if err := gui.reloadDatasources(); err != nil {
 			gui.Log.Error(err)
 		}
 	}()
@@ -328,16 +328,11 @@ func (gui *Gui) refresh() {
 	// 		gui.Log.Error(err)
 	// 	}
 	// }()
-	go func() {
-		if err := gui.reloadDatasources(); err != nil {
-			gui.Log.Error(err)
-		}
-	}()
-	go func() {
-		if err := gui.reloadImages(); err != nil {
-			gui.Log.Error(err)
-		}
-	}()
+	// go func() {
+	// 	if err := gui.reloadImages(); err != nil {
+	// 		gui.Log.Error(err)
+	// 	}
+	// }()
 }
 
 func (gui *Gui) listenForEvents(ctx context.Context, refresh func()) {

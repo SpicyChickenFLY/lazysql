@@ -30,8 +30,8 @@ type Views struct {
 	Project     *gocui.View
 	// Services    *gocui.View
 	// Containers  *gocui.View
-	Images      *gocui.View
-	Volumes     *gocui.View
+	// Images      *gocui.View
+	// Volumes     *gocui.View
 	Datasources *gocui.View
 	Databases   *gocui.View
 	// Networks   *gocui.View
@@ -71,11 +71,11 @@ func (gui *Gui) orderedViewNameMappings() []viewNameMapping {
 		{viewPtr: &gui.Views.Project, name: "project", autoPosition: true},
 		// {viewPtr: &gui.Views.Services, name: "services", autoPosition: true},
 		// {viewPtr: &gui.Views.Containers, name: "containers", autoPosition: true},
-		{viewPtr: &gui.Views.Images, name: "images", autoPosition: true},
-		{viewPtr: &gui.Views.Volumes, name: "volumes", autoPosition: true},
+		// {viewPtr: &gui.Views.Images, name: "images", autoPosition: true},
+		// {viewPtr: &gui.Views.Volumes, name: "volumes", autoPosition: true},
+		// {viewPtr: &gui.Views.Networks, name: "networks", autoPosition: true},
 		{viewPtr: &gui.Views.Datasources, name: "datasources", autoPosition: true},
 		{viewPtr: &gui.Views.Databases, name: "databases", autoPosition: true},
-		// {viewPtr: &gui.Views.Networks, name: "networks", autoPosition: true},
 
 		{viewPtr: &gui.Views.Main, name: "main", autoPosition: true},
 
@@ -125,13 +125,13 @@ func (gui *Gui) createAllViews() error {
 	// 	gui.Views.Containers.Title = gui.Tr.StandaloneContainersTitle
 	// }
 
-	gui.Views.Images.Highlight = true
-	gui.Views.Images.Title = gui.Tr.ImagesTitle
-	gui.Views.Images.SelBgColor = selectedLineBgColor
-
-	gui.Views.Volumes.Highlight = true
-	gui.Views.Volumes.Title = gui.Tr.VolumesTitle
-	gui.Views.Volumes.SelBgColor = selectedLineBgColor
+	// gui.Views.Images.Highlight = true
+	// gui.Views.Images.Title = gui.Tr.ImagesTitle
+	// gui.Views.Images.SelBgColor = selectedLineBgColor
+	//
+	// gui.Views.Volumes.Highlight = true
+	// gui.Views.Volumes.Title = gui.Tr.VolumesTitle
+	// gui.Views.Volumes.SelBgColor = selectedLineBgColor
 
 	gui.Views.Datasources.Highlight = true
 	gui.Views.Datasources.Title = "Datasource"
